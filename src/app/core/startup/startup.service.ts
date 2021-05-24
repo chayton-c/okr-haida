@@ -64,7 +64,7 @@ export class StartupService {
             // 初始化菜单
             this.menuService.add(res.menu);
             // 设置页面标题的后缀
-            this.titleService.default = '光电缆径路测绘及动态安全管控';
+            this.titleService.default = '海达';
             // this.titleService.suffix = res.app.name;
           },
           () => {},

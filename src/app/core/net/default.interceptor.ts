@@ -16,6 +16,8 @@ import { environment } from '@env/environment';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, filter, mergeMap, switchMap, take } from 'rxjs/operators';
+import {NzSafeAny} from "ng-zorro-antd/core/types";
+import {NzMessageService} from "ng-zorro-antd/message";
 
 const CODEMESSAGE: { [key: number]: string } = {
   200: '服务器成功返回请求的数据。',
@@ -45,7 +47,8 @@ export class DefaultInterceptor implements HttpInterceptor {
   private refreshToking = false;
   private refreshToken$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
-  constructor(private injector: Injector) {
+  constructor(private injector: Injector,
+              private msg: NzMessageService) {
     if (this.refreshTokenType === 'auth-refresh') {
       this.buildAuthRefresh();
     }
@@ -177,6 +180,21 @@ export class DefaultInterceptor implements HttpInterceptor {
     // 业务处理：一些通用操作
     switch (ev.status) {
       case 200:
+        // 后端返回5004，前往登录
+        let res = ev as NzSafeAny;
+        if (!res.body)
+          break;
+        let body: {
+          success?: boolean;
+          errorCode: number;
+          msg: string;
+        } = res.body;
+        if (body.errorCode == 5004)
+          this.toLogin();
+        // 不能改成!body.success
+        if (body.success === false)
+          this.msg.error(body.msg);
+
         // 业务层级错误处理，以下是假定restful有一套统一输出格式（指不管成功与否都有相应的数据格式）情况下进行处理
         // 例如响应内容：
         //  错误内容：{ status: 1, msg: '非法参数' }
@@ -186,8 +204,8 @@ export class DefaultInterceptor implements HttpInterceptor {
         //   const body = ev.body;
         //   if (body && body.status !== 0) {
         //     this.injector.get(NzMessageService).error(body.msg);
-        //     // 注意：这里如果继续抛出错误会被行254的 catchError 二次拦截，导致外部实现的 Pipe、subscribe 操作被中断，例如：this.http.get('/').subscribe() 不会触发
-        //     // 如果你希望外部实现，需要手动移除行254
+        //     // 继续抛出错误中断后续所有 Pipe、subscribe 操作，因此：
+        //     // this.http.get('/').subscribe() 并不会触发
         //     return throwError({});
         //   } else {
         //     // 重新修改 `body` 内容为 `response` 内容，对于绝大多数场景已经无须再关心业务状态码
