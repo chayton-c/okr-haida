@@ -24,6 +24,11 @@ const routes: Routes = [
       { path: 'delon', loadChildren: () => import('./delon/delon.module').then((m) => m.DelonModule) },
       { path: 'extras', loadChildren: () => import('./extras/extras.module').then((m) => m.ExtrasModule) },
       { path: 'pro', loadChildren: () => import('./pro/pro.module').then((m) => m.ProModule) },
+      { path: 'sales-target', loadChildren: () => import('./sales-target/sales-target.module').then((m) => m.SalesTargetModule) },
+      { path: 'role', loadChildren: () => import('./role/role.module').then((m) => m.RoleModule) },
+      { path: 'role-organization', loadChildren: () => import('./role-organization/role-organization.module').then((m) => m.RoleOrganizationModule) },
+      { path: 'user', loadChildren: () => import('./user/user.module').then((m) => m.UserModule) },
+      { path: 'organization', loadChildren: () => import('./organization/organization.module').then((m) => m.OrganizationModule) },
     ],
   },
   // Blak Layout 空白布局

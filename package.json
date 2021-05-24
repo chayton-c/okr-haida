@@ -23,7 +23,7 @@
   "scripts": {
     "ng-high-memory": "node --max_old_space_size=8000 ./node_modules/@angular/cli/bin/ng",
     "ng": "ng",
-    "start": "ng s -o",
+    "start": "ng serve -o --host 0.0.0.0 --disableHostCheck",
     "hmr": "ng s -o --hmr",
     "build": "npm run ng-high-memory build -- --prod",
     "analyze": "npm run ng-high-memory build -- --prod --source-map",
@@ -62,6 +62,7 @@
     "@ngx-translate/http-loader": "^6.0.0",
     "ajv": "^8.1.0",
     "ng-zorro-antd": "^11.4.1",
+    "ng-zorro-antd-mobile": "^4.0.0",
     "ngx-countdown": "^11.0.3",
     "ngx-tinymce": "^11.0.0",
     "ngx-ueditor": "^11.0.1",

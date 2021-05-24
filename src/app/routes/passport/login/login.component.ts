@@ -1,6 +1,6 @@
-import { Component, Inject, OnDestroy, Optional } from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit, Optional} from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { StartupService } from '@core';
 import { ReuseTabService } from '@delon/abc/reuse-tab';
 import { DA_SERVICE_TOKEN, ITokenService, SocialOpenType, SocialService } from '@delon/auth';
@@ -15,7 +15,7 @@ import { NzTabChangeEvent } from 'ng-zorro-antd/tabs';
   styleUrls: ['./login.component.less'],
   providers: [SocialService],
 })
-export class UserLoginComponent implements OnDestroy {
+export class UserLoginComponent implements OnDestroy, OnInit {
   constructor(
     fb: FormBuilder,
     private router: Router,
@@ -28,10 +28,11 @@ export class UserLoginComponent implements OnDestroy {
     private startupSrv: StartupService,
     public http: _HttpClient,
     public msg: NzMessageService,
+    private activatedRoute: ActivatedRoute,
   ) {
     this.form = fb.group({
-      userName: [null, [Validators.required, Validators.pattern(/^(admin|user)$/)]],
-      password: [null, [Validators.required, Validators.pattern(/^(ng\-alain\.com)$/)]],
+      userName: [null, [Validators.required]],
+      password: [null, [Validators.required]],
       mobile: [null, [Validators.required, Validators.pattern(/^1\d{10}$/)]],
       captcha: [null, [Validators.required]],
       remember: [true],
@@ -186,5 +187,48 @@ export class UserLoginComponent implements OnDestroy {
     if (this.interval$) {
       clearInterval(this.interval$);
     }
+  }
+
+  mobileRedirectUrl?: string;
+  ngOnInit(): void {
+    // this.activatedRoute.queryParams.subscribe((queryParams) => {
+    //   if (queryParams.mobileRedirectUrl) {
+    //     this.mobileRedirectUrl = queryParams.mobileRedirectUrl;
+    //     this.jump2url();
+    //   }
+    // });
+  }
+
+  jump2url() {
+    if (!this.mobileRedirectUrl) return;
+
+    console.log(this.mobileRedirectUrl)
+    this.http
+      .post('/api/auth/login', null, {
+        type: this.type,
+        username: 'dummy',
+        password: '1',
+      })
+      // .post('/login/account?_allow_anonymous=true', {
+      //   type: this.type,
+      //   userName: this.userName.value,
+      //   password: this.password.value,
+      // })
+      .subscribe((res) => {
+        if (!res.success) {
+          this.error = res.msg;
+          return;
+        }
+        // 清空路由复用信息
+        this.reuseTabService.clear();
+        // 设置用户Token信息
+        // // TODO: Mock expired value
+        res.user.expired = +new Date() + 1000 * 60 * 5;
+        this.tokenService.set(res.user);
+        // 重新获取 StartupService 内容，我们始终认为应用信息一般都会受当前用户授权范围而影响
+        this.startupSrv.load().then(() => {
+          this.router.navigate([this.mobileRedirectUrl]);
+        });
+      });
   }
 }

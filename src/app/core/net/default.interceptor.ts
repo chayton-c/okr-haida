@@ -1,21 +1,12 @@
-import {
-  HttpErrorResponse,
-  HttpEvent,
-  HttpHandler,
-  HttpHeaders,
-  HttpInterceptor,
-  HttpRequest,
-  HttpResponseBase,
-} from '@angular/common/http';
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest, HttpResponseBase} from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { ALAIN_I18N_TOKEN } from '@delon/theme';
-import { _HttpClient } from '@delon/theme';
+import {_HttpClient, ALAIN_I18N_TOKEN} from '@delon/theme';
 import { environment } from '@env/environment';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { catchError, filter, mergeMap, switchMap, take } from 'rxjs/operators';
+import { catchError, filter, mergeMap, switchMap, take, tap } from 'rxjs/operators';
 import {NzSafeAny} from "ng-zorro-antd/core/types";
 import {NzMessageService} from "ng-zorro-antd/message";
 
@@ -42,10 +33,15 @@ const CODEMESSAGE: { [key: number]: string } = {
  */
 @Injectable()
 export class DefaultInterceptor implements HttpInterceptor {
+  // private refreshTokenType: 're-request' | 'auth-refresh' = 'auth-refresh';
+  // private refreshToking = false;
+  // private refreshToken$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+
   private refreshTokenEnabled = environment.api.refreshTokenEnabled;
   private refreshTokenType: 're-request' | 'auth-refresh' = environment.api.refreshTokenType;
   private refreshToking = false;
   private refreshToken$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+
 
   constructor(private injector: Injector,
               private msg: NzMessageService) {
@@ -84,7 +80,8 @@ export class DefaultInterceptor implements HttpInterceptor {
    */
   private refreshTokenRequest(): Observable<any> {
     const model = this.tokenSrv.get();
-    return this.http.post(`/api/auth/refresh`, null, null, { headers: { refresh_token: model?.refresh_token || '' } });
+    console.log(model);
+    return this.http.post('/api/auth/refresh', null, null, { headers: { refresh_token: model?.refresh_token || '' } });
   }
 
   // #region 刷新Token方式一：使用 401 重新刷新 Token
@@ -103,6 +100,7 @@ export class DefaultInterceptor implements HttpInterceptor {
         switchMap(() => next.handle(this.reAttachToken(req))),
       );
     }
+
     // 3、尝试调用刷新 Token
     this.refreshToking = true;
     this.refreshToken$.next(null);
@@ -145,20 +143,22 @@ export class DefaultInterceptor implements HttpInterceptor {
   // #region 刷新Token方式二：使用 `@delon/auth` 的 `refresh` 接口
 
   private buildAuthRefresh(): void {
-    if (!this.refreshTokenEnabled) {
-      return;
-    }
+
+    if (!this.refreshTokenEnabled) return;
+
     this.tokenSrv.refresh
       .pipe(
-        filter(() => !this.refreshToking),
-        switchMap((res) => {
-          console.log(res);
+        filter(() => {
+          return !this.refreshToking;
+        }),
+        switchMap(() => {
           this.refreshToking = true;
           return this.refreshTokenRequest();
         }),
       )
       .subscribe(
         (res) => {
+          console.log(res)
           // TODO: Mock expired value
           res.expired = +new Date() + 1000 * 60 * 5;
           this.refreshToking = false;
@@ -171,12 +171,17 @@ export class DefaultInterceptor implements HttpInterceptor {
   // #endregion
 
   private toLogin(): void {
-    this.notification.error(`未登录或登录已过期，请重新登录。`, ``);
+    // this.notification.error(`未登录或登录已过期，请重新登录。`, ``);
     this.goTo('/passport/login');
   }
 
   private handleData(ev: HttpResponseBase, req: HttpRequest<any>, next: HttpHandler): Observable<any> {
+    // 可能会因为 `throw` 导出无法执行 `_HttpClient` 的 `end()` 操作
+    if (ev.status > 0) {
+      this.http.end();
+    }
     this.checkStatus(ev);
+
     // 业务处理：一些通用操作
     switch (ev.status) {
       case 200:
@@ -256,7 +261,7 @@ export class DefaultInterceptor implements HttpInterceptor {
     // 统一加上服务端前缀
     let url = req.url;
     if (!url.startsWith('https://') && !url.startsWith('http://')) {
-      url = environment.api.baseUrl + url;
+      // url = environment.SERVER_URL + url;
     }
 
     const newReq = req.clone({ url, setHeaders: this.getAdditionalHeaders(req.headers) });
