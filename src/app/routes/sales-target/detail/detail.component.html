@@ -1,0 +1,69 @@
+<page-header [breadcrumb]="breadcrumb" [title]="'单位配置'"></page-header>
+<ng-template #breadcrumb>
+  <nz-breadcrumb>
+    <nz-breadcrumb-item>
+      <a [routerLink]="['/']">首页</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>
+      <a *ngIf="!this.salesTarget.id" [routerLink]="['/sales-target/list']">目标达成情况</a>
+      <a *ngIf="this.salesTarget.id" [routerLink]="['/sales-target/edit-list']">销售目标编辑</a>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>目标</nz-breadcrumb-item>
+  </nz-breadcrumb>
+</ng-template>
+
+<nz-card nzTitle="单位信息">
+  <form nz-form>
+    <div nz-row [nzGutter]="24">
+      <div nz-col [nzSpan]="13">
+        <nz-form-item [nzGutter]="24">
+          <nz-form-label>分店名</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="请输入名称" name="shopName" [(ngModel)]="salesTarget.shopName"/>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div nz-row [nzGutter]="24">
+      <div nz-col [nzSpan]="13">
+        <nz-form-item [nzGutter]="24">
+          <nz-form-label>销售目标</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="请输入销售目标" name="salesTarget" [(ngModel)]="salesTarget.salesTarget"/>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div nz-row [nzGutter]="24">
+      <div nz-col [nzSpan]="13">
+        <nz-form-item [nzGutter]="24">
+          <nz-form-label>销售额</nz-form-label>
+          <nz-form-control>
+            <input nz-input placeholder="请输入销售额" name="sales" [(ngModel)]="salesTarget.sales"/>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div nz-row>
+      <div nz-col [nzSpan]="24" class="search-area">
+        <button
+          nz-popconfirm
+          nzPopconfirmTitle="确定要提交销售目标吗?"
+          (nzOnConfirm)="executeSalesTarget()"
+          nzPopconfirmPlacement="topLeft"
+          nzType="primary"
+          nz-button>
+          提交
+        </button>
+        <button
+          nz-popconfirm
+          nzPopconfirmTitle="确定要删除销售目标吗?"
+          (nzOnConfirm)="deleteSalesTarget()"
+          nzPopconfirmPlacement="topLeft"
+          nz-button>
+          删除
+        </button>
+      </div>
+    </div>
+  </form>
+</nz-card>

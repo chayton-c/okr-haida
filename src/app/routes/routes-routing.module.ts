@@ -29,7 +29,7 @@ const routes: Routes = [
       { path: 'role-organization', loadChildren: () => import('./role-organization/role-organization.module').then((m) => m.RoleOrganizationModule) },
       { path: 'user', loadChildren: () => import('./user/user.module').then((m) => m.UserModule) },
       { path: 'organization', loadChildren: () => import('./organization/organization.module').then((m) => m.OrganizationModule) },
-    ],
+    { path: 'gantt-demo', loadChildren: () => import('./gantt-demo/gantt-demo.module').then((m) => m.GanttDemoModule) },],
   },
   // Blak Layout 空白布局
   {

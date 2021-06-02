@@ -61,6 +61,7 @@
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
     "ajv": "^8.1.0",
+    "angular-gantt-schedule-timeline-calendar": "^1.1.22",
     "ng-zorro-antd": "^11.4.1",
     "ng-zorro-antd-mobile": "^4.0.0",
     "ngx-countdown": "^11.0.3",

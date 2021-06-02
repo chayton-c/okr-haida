@@ -1,20 +1,22 @@
 <div class="alain-default__content-title">
   <h1>
-    目标达成情况
-    <small>Welcome !</small>
+    销售目标编辑
   </h1>
 </div>
 <div nz-row nzGutter="16">
   <div nz-col nzXs="24" nzSm="12" nzMd="6" class="mb-md"
        *ngFor="let salesTarget of salesTargets; let i = index">
-    <div nz-row nzType="flex" nzAlign="middle" class="bg-primary rounded-md"
-      *ngIf="i % 4 == 0">
+    <div nz-row nzType="flex"
+         nzAlign="middle"
+         class="bg-primary rounded-md"
+         *ngIf="i % 4 == 0"
+         (click)="jump2detail(salesTarget.id)">
       <div nz-col nzSpan="24" class="p-md text-white">
         <div class="h4 mt0" style="margin-bottom: 16px">
           {{salesTarget.shopName}}：
         </div>
         <p class="text-nowrap mb0" style="margin-bottom: 5px">目标：{{salesTarget.salesTarget}}</p>
-        <p class="text-nowrap mb0" style="margin-bottom: 5px">销售额：{{salesTarget.sales}}</p>
+        <p class="text-nowrap mb0" style="margin-bottom: 5px">达成：{{salesTarget.sales}}</p>
 
         <div nz-row>
           <span nz-col nzSpan="12" class="text-nowrap mb0">提交人：{{salesTarget.executorName}}</span>
@@ -22,16 +24,15 @@
         </div>
       </div>
     </div>
-
-
     <div nz-row nzType="flex" nzAlign="middle" class="bg-success rounded-md"
-         *ngIf="i % 4 == 1">
+         *ngIf="i % 4 == 1"
+         (click)="jump2detail(salesTarget.id)">
       <div nz-col nzSpan="24" class="p-md text-white">
         <div class="h4 mt0" style="margin-bottom: 16px">
           {{salesTarget.shopName}}：
         </div>
         <p class="text-nowrap mb0" style="margin-bottom: 5px">目标：{{salesTarget.salesTarget}}</p>
-        <p class="text-nowrap mb0" style="margin-bottom: 5px">销售额：{{salesTarget.sales}}</p>
+        <p class="text-nowrap mb0" style="margin-bottom: 5px">达成：{{salesTarget.sales}}</p>
 
         <div nz-row>
           <span nz-col nzSpan="12" class="text-nowrap mb0">提交人：{{salesTarget.executorName}}</span>
@@ -39,16 +40,15 @@
         </div>
       </div>
     </div>
-
-
     <div nz-row nzType="flex" nzAlign="middle" class="bg-orange rounded-md"
-         *ngIf="i % 4 == 2">
+         *ngIf="i % 4 == 2"
+         (click)="jump2detail(salesTarget.id)">
       <div nz-col nzSpan="24" class="p-md text-white">
         <div class="h4 mt0" style="margin-bottom: 16px">
           {{salesTarget.shopName}}：
         </div>
         <p class="text-nowrap mb0" style="margin-bottom: 5px">目标：{{salesTarget.salesTarget}}</p>
-        <p class="text-nowrap mb0" style="margin-bottom: 5px">销售额：{{salesTarget.sales}}</p>
+        <p class="text-nowrap mb0" style="margin-bottom: 5px">达成：{{salesTarget.sales}}</p>
 
         <div nz-row>
           <span nz-col nzSpan="12" class="text-nowrap mb0">提交人：{{salesTarget.executorName}}</span>
@@ -56,16 +56,15 @@
         </div>
       </div>
     </div>
-
-
     <div nz-row nzType="flex" nzAlign="middle" class="bg-magenta rounded-md"
-         *ngIf="i % 4 == 3">
+         *ngIf="i % 4 == 3"
+         (click)="jump2detail(salesTarget.id)">
       <div nz-col nzSpan="24" class="p-md text-white">
         <div class="h4 mt0" style="margin-bottom: 16px">
           {{salesTarget.shopName}}：
         </div>
         <p class="text-nowrap mb0" style="margin-bottom: 5px">目标：{{salesTarget.salesTarget}}</p>
-        <p class="text-nowrap mb0" style="margin-bottom: 5px">销售额：{{salesTarget.sales}}</p>
+        <p class="text-nowrap mb0" style="margin-bottom: 5px">达成：{{salesTarget.sales}}</p>
 
         <div nz-row>
           <span nz-col nzSpan="12" class="text-nowrap mb0">提交人：{{salesTarget.executorName}}</span>

@@ -1,14 +1,14 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import { _HttpClient } from '@delon/theme';
+import {_HttpClient, MenuService} from '@delon/theme';
+import {SalesTarget} from "../../../pojos/sales-target/salesTarget";
+import {NzMessageService} from "ng-zorro-antd/message";
 import {OnboardingService} from "@delon/abc/onboarding";
 import {Platform} from "@angular/cdk/platform";
-import {HttpUtils} from "../../../shared/utils/utils/http-utils";
-import {NzMessageService} from "ng-zorro-antd/message";
-import {SalesTarget} from "../../../pojos/sales-target/salesTarget";
+import {Router} from "@angular/router";
 
 @Component({
-  selector: 'app-sales-target-list',
-  templateUrl: './list.component.html',
+  selector: 'app-sales-target-edit-list',
+  templateUrl: './edit-list.component.html',
   styles: [
     `
       /deep/ .my-list .spe .am-list-extra {
@@ -17,7 +17,7 @@ import {SalesTarget} from "../../../pojos/sales-target/salesTarget";
     `
   ]
 })
-export class SalesTargetListComponent implements OnInit {
+export class SalesTargetEditListComponent implements OnInit {
   todoData = [
     {
       completed: true,
@@ -63,6 +63,7 @@ export class SalesTargetListComponent implements OnInit {
   salesTargets: SalesTarget[] = [];
 
   constructor(private http: _HttpClient,
+              private router: Router,
               private msg: NzMessageService,
               private cdr: ChangeDetectorRef, private obSrv: OnboardingService, private platform: Platform) {
     // TODO: Wait for the page to load
@@ -89,6 +90,14 @@ export class SalesTargetListComponent implements OnInit {
 
       this.salesTargets = res.salesTargets;
       console.log(this.salesTargets);
+    });
+  }
+
+  jump2detail(id: string):void {
+    this.router.navigate(['/sales-target/detail'], {
+      queryParams: {
+        id: id,
+      },
     });
   }
 

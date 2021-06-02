@@ -2,6 +2,7 @@ import { Platform } from '@angular/cdk/platform';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { OnboardingService } from '@delon/abc/onboarding';
 import { _HttpClient } from '@delon/theme';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-dashboard-v1',
@@ -52,12 +53,15 @@ export class DashboardV1Component implements OnInit {
   salesData!: any[];
   offlineChartData!: any[];
 
-  constructor(private http: _HttpClient, private cdr: ChangeDetectorRef, private obSrv: OnboardingService, private platform: Platform) {
+  constructor(private http: _HttpClient,
+              private router: Router,private cdr: ChangeDetectorRef, private obSrv: OnboardingService, private platform: Platform) {
     // TODO: Wait for the page to load
     setTimeout(() => this.genOnboarding(), 1000);
   }
 
   ngOnInit(): void {
+    this.router.navigate(['sales-target/list'])
+
     this.http.get('/chart').subscribe((res) => {
       this.webSite = res.visitData.slice(0, 10);
       this.salesData = res.salesData;

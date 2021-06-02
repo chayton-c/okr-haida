@@ -9,7 +9,7 @@ import {Organization} from "../../../pojos/organization/organization";
 @Component({
   selector: 'app-organization-detail',
   templateUrl: './detail.component.html',
-  styleUrls: ['../../../../../../okr-haida/src/app/routes/organization/detail/detail.component.css'],
+  styleUrls: ['./detail.component.css'],
 })
 export class OrganizationDetailComponent implements OnInit {
   validateForm: FormGroup;
